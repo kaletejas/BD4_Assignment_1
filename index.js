@@ -120,6 +120,25 @@ app.get('/restaurants/sort-by-rating', async (req,res)=>{
   }
 })
 
+//fn 6
+async function fetchAllDishes(){
+  let query = 'SELECT * FROM dishes'
+  let response = await db.all(query, []);
+  return {dishes : response}
+}
+//Exercise 6: Get All Dishes
+app.get('/dishes', async (req,res)=>{
+  try{
+    let results = await fetchAllDishes();
+    if(results.dishes.length === 0){
+      return res.status(404).json({message : 'Dishes not found'})
+    }
+    res.status(200).json(results)
+  }catch(error){
+    return res.status(500).json({error : error.message})
+  }
+})
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
