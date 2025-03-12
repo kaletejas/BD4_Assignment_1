@@ -157,6 +157,28 @@ app.get('/dishes/details/:id', async (req,res)=>{
     return res.status(500).json({error : error.message})
   }
 })
+//fn 8
+async function filterDishes(isVeg){
+  let query = 'SELECT * FROM dishes WHERE isVeg =?'
+  let response = await db.all(query, [isVeg]);
+  return {dishes : response}
+}
+//Exercise 8: Get Dishes by Filter
+app.get('/dishes/filter', async (req,res)=>{
+  let isVeg = req.query.isVeg;
+  try{
+    let results = await filterDishes(isVeg);
+    if(results.dishes.length === 0){
+      return res.status(404).json({message : 'Dishes not found for specified Filter '})
+    }
+    res.status(200).json(results)
+  }catch(error){
+    return res.status(500).json({error : error.message})
+  }
+})
+
+//Exercise 9: Get Dishes Sorted by Price
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
