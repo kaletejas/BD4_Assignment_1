@@ -37,6 +37,28 @@ app.get('/restaurants', async (req,res)=>{
   }
 })
 
+//fn 2
+async function fetchRestaurantsById(id){
+  let query = 'SELECT * FROM restaurants WHERE id = ?'
+  let response = await db.all(query, [id]);
+  return {restaurants : response}
+}
+
+//Exercise 2: Get Restaurant by ID
+app.get('/restaurants/details/:id', async (req,res)=>{
+  let id = req.params.id;
+  console.log('Id' + id);
+  try{
+    let results = await fetchRestaurantsById(id)
+    if(results.restaurants.length === 0){
+      return res.status(404).json({message : 'Restaurants not found for id: '+ id})
+    }
+    res.status(200).json(results)
+  }catch(error){
+    return res.status(500).json({error : error.message})
+  }
+})
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
