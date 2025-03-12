@@ -78,6 +78,30 @@ app.get('/restaurants/cuisine/:cuisine', async (req,res)=>{
   }
 })
 
+//fn 4
+async function filterRestaurants(isVeg,hasOutdoorSeating,isLuxury){
+  let query = 'SELECT * FROM restaurants WHERE isVeg =? AND hasOutdoorSeating=? AND isLuxury=?'
+  let response = await db.all(query, [isVeg, hasOutdoorSeating, isLuxury]);
+  return {restaurants : response}
+}
+//Exercise 4: Get Restaurants by Filter
+app.get('/restaurants/filter', async (req,res)=>{
+  let isVeg = req.query.isVeg;
+  let hasOutdoorSeating = req.query.hasOutdoorSeating;
+  let isLuxury = req.query.isLuxury;
+  try{
+    let results = await filterRestaurants(isVeg,hasOutdoorSeating,isLuxury);
+    if(results.restaurants.length === 0){
+      return res.status(404).json({message : 'Restaurants not found for specified filter'})
+    }
+    res.status(200).json(results)
+  }catch(error){
+    return res.status(500).json({error : error.message})
+  }
+})
+
+//Exercise 5: Get Restaurants Sorted by Rating
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
