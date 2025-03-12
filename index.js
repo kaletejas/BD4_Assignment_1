@@ -177,8 +177,24 @@ app.get('/dishes/filter', async (req,res)=>{
   }
 })
 
+//fn 9
+async function sortDishes(){
+  let query = 'SELECT * FROM dishes ORDER BY price'
+  let response = await db.all(query, []);
+  return {dishes : response}
+}
 //Exercise 9: Get Dishes Sorted by Price
-
+app.get('/dishes/sort-by-price', async (req,res)=>{
+  try{
+    let results = await sortDishes();
+    if(results.dishes.length === 0){
+      return res.status(404).json({message : 'Dishes not found '})
+    }
+    res.status(200).json(results)
+  }catch(error){
+    return res.status(500).json({error : error.message})
+  }
+})
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
