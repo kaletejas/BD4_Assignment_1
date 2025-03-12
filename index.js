@@ -138,7 +138,25 @@ app.get('/dishes', async (req,res)=>{
     return res.status(500).json({error : error.message})
   }
 })
-
+// fn 7
+async function fetchDishesById(id){
+  let query = 'SELECT * FROM dishes WHERE id =?'
+  let response = await db.all(query, [id]);
+  return {dishes : response}
+}
+//Exercise 7: Get Dish by ID
+app.get('/dishes/details/:id', async (req,res)=>{
+  let id = req.params.id;
+  try{
+    let results = await fetchDishesById(id);
+    if(results.dishes.length === 0){
+      return res.status(404).json({message : 'Dishes not found for ID: ' + id})
+    }
+    res.status(200).json(results)
+  }catch(error){
+    return res.status(500).json({error : error.message})
+  }
+})
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
