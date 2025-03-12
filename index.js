@@ -100,7 +100,26 @@ app.get('/restaurants/filter', async (req,res)=>{
   }
 })
 
+//fn 5
+async function sortRestaurantsByRating(){
+  let query = 'SELECT * FROM restaurants ORDER BY rating DESC'
+  let response = await db.all(query, []);
+  return {restaurants : response}
+}
+
 //Exercise 5: Get Restaurants Sorted by Rating
+app.get('/restaurants/sort-by-rating', async (req,res)=>{
+  try{
+    let results = await sortRestaurantsByRating();
+    if(results.restaurants.length === 0){
+      return res.status(404).json({message : 'Restaurants not found'})
+    }
+    res.status(200).json(results)
+  }catch(error){
+    return res.status(500).json({error : error.message})
+  }
+})
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
